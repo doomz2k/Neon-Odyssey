@@ -153,3 +153,14 @@ insert into lore_glossary (term, meaning) values
  ('Hyperspark', 'The spark that gives robots and constructs true sapience.'),
  ('Outrunner', 'The game term for a spacefaring adventurer — i.e. the players.')
 on conflict (term) do nothing;
+
+-- Species listed on the wiki but with no public description yet (pre-release stubs).
+-- Placeholders — replace the blurbs once the books reveal them.
+insert into lore_species (name, blurb) values
+ ('Yaungu',    'A playable species of the Stardust Rhapsody. Full details not yet revealed in public previews.'),
+ ('Yoggoth',   'A species created through the dreams of the Eldest. Full details not yet revealed in public previews.'),
+ ('Zamani',    'A playable species of the Stardust Rhapsody. Full details not yet revealed in public previews.'),
+ ('Zephursa',  'A playable species of the Stardust Rhapsody. Full details not yet revealed in public previews.'),
+ ('Zeticulan', 'A playable species of the Stardust Rhapsody. Full details not yet revealed in public previews.'),
+ ('Zorbrak',   'A playable species of the Stardust Rhapsody. Full details not yet revealed in public previews.')
+on conflict (name) do nothing;
