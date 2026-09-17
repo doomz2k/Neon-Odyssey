@@ -18,7 +18,7 @@
   </header>
 
   <div class="wrap">
-    <!-- MAIN MENU: pick who you are -->
+    <!-- MAIN MENU -->
     <section id="selectView">
       <div class="panel" style="text-align:center;">
         <h2 style="justify-content:center;">Who are you?</h2>
@@ -30,30 +30,124 @@
     <!-- PLAYER AREA -->
     <section id="appView" class="hidden">
       <nav class="tabs">
-        <button data-tab="characters" class="active">Characters</button>
+        <button data-tab="sheet" class="active">Character</button>
+        <button data-tab="notes">Notes</button>
+        <button data-tab="summaries">Session Summaries</button>
         <button data-tab="lore">Lore</button>
-        <button data-tab="notes">Campaign Notes</button>
       </nav>
 
-      <!-- CHARACTERS -->
-      <div id="tab-characters" class="tabpane">
-        <div class="panel">
-          <h2>New character</h2>
-          <div id="charMsg"></div>
-          <div class="row">
-            <div><label>Name</label><input id="c-name" placeholder="e.g. Vex Corrigan" /></div>
-            <div><label>Species</label><select id="c-species"></select></div>
+      <!-- CHARACTER SHEET -->
+      <div id="tab-sheet" class="tabpane">
+        <div class="sheet-toolbar panel">
+          <div id="lockState" class="muted small">Editable</div>
+          <div class="row shrink" style="gap:8px;flex:0 0 auto;">
+            <button class="btn" id="saveBtn">Save</button>
+            <button class="btn ghost" id="lockBtn">🔒 Lock</button>
           </div>
-          <div class="row">
-            <div><label>Class</label><input id="c-class" placeholder="e.g. Outrunner" /></div>
-            <div><label>Subclass</label><input id="c-subclass" /></div>
-            <div class="shrink" style="width:90px;"><label>Level</label><input id="c-level" type="number" value="1" min="1" max="20" /></div>
-          </div>
-          <label>Concept / notes</label>
-          <textarea id="c-concept" placeholder="One debt, one regret, one dream…"></textarea>
-          <div style="margin-top:12px;"><button class="btn" id="c-create">Save character</button></div>
+          <div id="sheetMsg" style="flex-basis:100%;"></div>
         </div>
-        <div class="panel"><h2 id="charListTitle">Your characters</h2><div id="charList" class="grid"></div></div>
+
+        <div id="sheet">
+          <!-- Identity + art -->
+          <div class="panel sheet-identity">
+            <div class="art-col">
+              <div id="artPreview" class="art-preview">No art</div>
+              <label class="art-upload btn ghost small">Upload art
+                <input id="artInput" type="file" accept="image/*" hidden />
+              </label>
+              <div id="artMsg" class="small"></div>
+            </div>
+            <div class="id-col">
+              <div class="row">
+                <div style="flex:2;"><label>Character name</label><input data-field="name" /></div>
+                <div><label>Species</label><select data-field="species" id="speciesSelect"></select></div>
+              </div>
+              <div class="row">
+                <div><label>Class</label><input data-field="class" /></div>
+                <div><label>Subclass</label><input data-field="subclass" /></div>
+                <div class="shrink" style="width:80px;"><label>Level</label><input data-field="level" type="number" min="1" max="20" value="1" /></div>
+              </div>
+              <div class="row">
+                <div><label>Background</label><input data-field="background" /></div>
+                <div><label>Alignment</label><input data-field="alignment" /></div>
+                <div class="shrink" style="width:110px;"><label>Galactic Notes</label><input data-field="galactic_notes" /></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abilities + combat -->
+          <div class="sheet-grid">
+            <div class="panel">
+              <h2>Ability Scores</h2>
+              <div id="abilities" class="abilities"></div>
+              <div class="row" style="margin-top:10px;">
+                <div class="shrink" style="width:120px;"><label>Proficiency</label><input data-field="prof_bonus" type="number" value="2" /></div>
+                <div class="shrink"><label>Inspiration</label><input data-field="inspiration" type="number" value="0" style="width:80px;" /></div>
+              </div>
+            </div>
+            <div class="panel">
+              <h2>Combat</h2>
+              <div class="combat-grid">
+                <div><label>Armour Class</label><input data-field="ac" type="number" /></div>
+                <div><label>Initiative</label><input data-field="initiative" type="number" /></div>
+                <div><label>Speed</label><input data-field="speed" /></div>
+                <div><label>Hit Dice</label><input data-field="hit_dice" /></div>
+                <div><label>Max HP</label><input data-field="hp_max" type="number" /></div>
+                <div><label>Current HP</label><input data-field="hp_cur" type="number" /></div>
+                <div><label>Temp HP</label><input data-field="hp_temp" type="number" /></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saves + skills -->
+          <div class="sheet-grid">
+            <div class="panel">
+              <h2>Saving Throws</h2>
+              <div id="saves" class="prof-list"></div>
+            </div>
+            <div class="panel">
+              <h2>Skills <span class="small muted">· Computers &amp; Technology are INT</span></h2>
+              <div id="skills" class="prof-list"></div>
+            </div>
+          </div>
+
+          <!-- Text sections -->
+          <div class="panel"><h2>Weapons &amp; Attacks</h2><textarea data-field="attacks" placeholder="Name · bonus · damage…"></textarea></div>
+          <div class="panel"><h2>Equipment</h2><textarea data-field="equipment"></textarea></div>
+          <div class="panel"><h2>Features &amp; Traits</h2><textarea data-field="features"></textarea></div>
+          <div class="panel"><h2>Proficiencies &amp; Languages</h2><textarea data-field="proficiencies"></textarea></div>
+          <div class="panel"><h2>Personality, Ideals, Bonds &amp; Flaws</h2><textarea data-field="personality"></textarea></div>
+        </div>
+      </div>
+
+      <!-- NOTES (personal) -->
+      <div id="tab-notes" class="tabpane hidden">
+        <div class="panel">
+          <h2>Add a note</h2>
+          <p class="small muted">Your personal notes — only you (and the DM) see them.</p>
+          <div id="notesMsg"></div>
+          <label>Title</label><input id="n-title" />
+          <label>Body</label><textarea id="n-body"></textarea>
+          <div style="margin-top:10px;"><button class="btn" id="n-create">Save note</button></div>
+        </div>
+        <div class="panel"><h2>Your notes</h2><div id="noteList"></div></div>
+      </div>
+
+      <!-- SESSION SUMMARIES (shared) -->
+      <div id="tab-summaries" class="tabpane hidden">
+        <div class="panel">
+          <h2>Add a session summary</h2>
+          <p class="small muted">Shared — every player and the DM can read all summaries.</p>
+          <div id="sumMsg"></div>
+          <div class="row">
+            <div class="shrink" style="width:110px;"><label>Session #</label><input id="s-no" type="number" /></div>
+            <div><label>Title</label><input id="s-title" /></div>
+            <div class="shrink" style="width:150px;"><label>Date played</label><input id="s-date" type="date" /></div>
+          </div>
+          <label>Summary</label><textarea id="s-body"></textarea>
+          <div style="margin-top:10px;"><button class="btn" id="s-create">Post summary</button></div>
+        </div>
+        <div class="panel"><h2>All session summaries</h2><div id="sumList"></div></div>
       </div>
 
       <!-- LORE -->
@@ -66,18 +160,6 @@
         <div class="panel"><h2>Powers &amp; Patrons</h2><div id="patronList" class="grid"></div></div>
         <div class="panel"><h2>Glossary</h2><div id="glossaryList" class="grid"></div></div>
       </div>
-
-      <!-- NOTES -->
-      <div id="tab-notes" class="tabpane hidden">
-        <div class="panel">
-          <h2>Add a shared note</h2>
-          <div id="notesMsg"></div>
-          <label>Title</label><input id="n-title" />
-          <label>Body</label><textarea id="n-body"></textarea>
-          <div style="margin-top:12px;"><button class="btn" id="n-create">Post note</button></div>
-        </div>
-        <div class="panel"><h2>Shared notes</h2><div id="noteList"></div></div>
-      </div>
     </section>
   </div>
 
@@ -85,6 +167,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+  <script src="js/sheet.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

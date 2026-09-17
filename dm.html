@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Neon Odyssey — DM Console</title>
   <link rel="stylesheet" href="css/style.css" />
-  <!-- PIN gate FIRST, before anything renders, so DM content never flashes. -->
   <script src="js/dm-gate.js"></script>
 </head>
 <body>
@@ -16,13 +15,19 @@
 
   <div class="wrap">
     <nav class="tabs">
-      <button data-tab="npcs" class="active">NPCs</button>
+      <button data-tab="characters" class="active">Characters</button>
+      <button data-tab="npcs">NPCs</button>
       <button data-tab="encounters">Encounters</button>
       <button data-tab="loot">Loot</button>
       <button data-tab="dmnotes">DM Notes</button>
     </nav>
 
-    <div id="tab-npcs" class="tabpane">
+    <!-- CHARACTERS (read-only sheets for every player) -->
+    <div id="tab-characters" class="tabpane">
+      <div class="panel"><h2>Player character sheets</h2><div id="char-sheets"></div></div>
+    </div>
+
+    <div id="tab-npcs" class="tabpane hidden">
       <div class="panel"><h2>New NPC</h2>
         <div class="row"><div><label>Name</label><input id="npc-name" /></div>
         <div><label>Role</label><input id="npc-role" placeholder="e.g. Bounty broker on Sleema" /></div></div>
@@ -66,6 +71,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
+  <script src="js/sheet.js"></script>
   <script src="js/dm-common.js"></script>
 </body>
 </html>
