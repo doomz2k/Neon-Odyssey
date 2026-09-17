@@ -13,3 +13,6 @@ node_modules/
 # Never commit the service_role/secret key or any private env
 .env
 .env.*
+
+# Desktop app drops delivered files here — not part of the project
+Claude outputs/

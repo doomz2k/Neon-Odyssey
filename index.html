@@ -10,63 +10,75 @@
   <header class="top">
     <h1>NEON&nbsp;<span class="glow">ODYSSEY</span></h1>
     <div class="whoami">
-      <label class="small" style="margin:0;color:#ffd9f4;">You are
-        <input id="playerName" placeholder="your name" style="width:130px;display:inline-block;padding:4px 8px;" />
-      </label>
+      <span id="whoBadge" class="hidden">You are <strong id="whoName"></strong>
+        <button id="switchBtn" class="btn ghost small">switch</button>
+      </span>
       <a href="dm.html" class="small">DM area &rarr;</a>
     </div>
   </header>
 
   <div class="wrap">
-    <nav class="tabs">
-      <button data-tab="characters" class="active">Characters</button>
-      <button data-tab="lore">Lore</button>
-      <button data-tab="notes">Campaign Notes</button>
-    </nav>
+    <!-- MAIN MENU: pick who you are -->
+    <section id="selectView">
+      <div class="panel" style="text-align:center;">
+        <h2 style="justify-content:center;">Who are you?</h2>
+        <p class="muted" style="margin-bottom:16px;">Choose your Outrunner to enter your area.</p>
+        <div id="playerCards" class="grid" style="max-width:640px;margin:0 auto;"></div>
+      </div>
+    </section>
 
-    <!-- CHARACTERS -->
-    <div id="tab-characters" class="tabpane">
-      <div class="panel">
-        <h2>New character</h2>
-        <div id="charMsg"></div>
-        <div class="row">
-          <div><label>Name</label><input id="c-name" placeholder="e.g. Vex Corrigan" /></div>
-          <div><label>Species</label><select id="c-species"></select></div>
+    <!-- PLAYER AREA -->
+    <section id="appView" class="hidden">
+      <nav class="tabs">
+        <button data-tab="characters" class="active">Characters</button>
+        <button data-tab="lore">Lore</button>
+        <button data-tab="notes">Campaign Notes</button>
+      </nav>
+
+      <!-- CHARACTERS -->
+      <div id="tab-characters" class="tabpane">
+        <div class="panel">
+          <h2>New character</h2>
+          <div id="charMsg"></div>
+          <div class="row">
+            <div><label>Name</label><input id="c-name" placeholder="e.g. Vex Corrigan" /></div>
+            <div><label>Species</label><select id="c-species"></select></div>
+          </div>
+          <div class="row">
+            <div><label>Class</label><input id="c-class" placeholder="e.g. Outrunner" /></div>
+            <div><label>Subclass</label><input id="c-subclass" /></div>
+            <div class="shrink" style="width:90px;"><label>Level</label><input id="c-level" type="number" value="1" min="1" max="20" /></div>
+          </div>
+          <label>Concept / notes</label>
+          <textarea id="c-concept" placeholder="One debt, one regret, one dream…"></textarea>
+          <div style="margin-top:12px;"><button class="btn" id="c-create">Save character</button></div>
         </div>
-        <div class="row">
-          <div><label>Class</label><input id="c-class" placeholder="e.g. Outrunner" /></div>
-          <div><label>Subclass</label><input id="c-subclass" /></div>
-          <div class="shrink" style="width:90px;"><label>Level</label><input id="c-level" type="number" value="1" min="1" max="20" /></div>
+        <div class="panel"><h2 id="charListTitle">Your characters</h2><div id="charList" class="grid"></div></div>
+      </div>
+
+      <!-- LORE -->
+      <div id="tab-lore" class="tabpane hidden">
+        <div class="panel">
+          <h2>Species of the Stardust Rhapsody</h2>
+          <input id="loreSearch" placeholder="Search species…" style="margin-bottom:12px;" />
+          <div id="speciesList" class="grid"></div>
         </div>
-        <label>Concept / notes</label>
-        <textarea id="c-concept" placeholder="One debt, one regret, one dream…"></textarea>
-        <div style="margin-top:12px;"><button class="btn" id="c-create">Save character</button></div>
+        <div class="panel"><h2>Powers &amp; Patrons</h2><div id="patronList" class="grid"></div></div>
+        <div class="panel"><h2>Glossary</h2><div id="glossaryList" class="grid"></div></div>
       </div>
-      <div class="panel"><h2>Party characters</h2><div id="charList" class="grid"></div></div>
-    </div>
 
-    <!-- LORE -->
-    <div id="tab-lore" class="tabpane hidden">
-      <div class="panel">
-        <h2>Species of the Stardust Rhapsody</h2>
-        <input id="loreSearch" placeholder="Search species…" style="margin-bottom:12px;" />
-        <div id="speciesList" class="grid"></div>
+      <!-- NOTES -->
+      <div id="tab-notes" class="tabpane hidden">
+        <div class="panel">
+          <h2>Add a shared note</h2>
+          <div id="notesMsg"></div>
+          <label>Title</label><input id="n-title" />
+          <label>Body</label><textarea id="n-body"></textarea>
+          <div style="margin-top:12px;"><button class="btn" id="n-create">Post note</button></div>
+        </div>
+        <div class="panel"><h2>Shared notes</h2><div id="noteList"></div></div>
       </div>
-      <div class="panel"><h2>Powers &amp; Patrons</h2><div id="patronList" class="grid"></div></div>
-      <div class="panel"><h2>Glossary</h2><div id="glossaryList" class="grid"></div></div>
-    </div>
-
-    <!-- NOTES -->
-    <div id="tab-notes" class="tabpane hidden">
-      <div class="panel">
-        <h2>Add a shared note</h2>
-        <div id="notesMsg"></div>
-        <label>Title</label><input id="n-title" />
-        <label>Body</label><textarea id="n-body"></textarea>
-        <div style="margin-top:12px;"><button class="btn" id="n-create">Post note</button></div>
-      </div>
-      <div class="panel"><h2>Shared notes</h2><div id="noteList"></div></div>
-    </div>
+    </section>
   </div>
 
   <div class="foot">Neon Odyssey tools · lore summarised from public previews, may change before release.</div>
