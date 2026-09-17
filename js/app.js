@@ -1,7 +1,8 @@
 'use strict';
 
-// Player-side logic. One character sheet per player, plus personal Notes and
-// shared Session Summaries. Uses helpers from sheet.js and the `sb` client.
+// Player-side logic. One sheet per player, all sheet data stored in the
+// character row's `sheet` jsonb (no dependency on extra columns). Plus personal
+// Notes and shared Session Summaries.
 
 const PLAYERS = ['Ben', 'Franc', 'Dom', 'Paddy', 'Hendri'];
 const ART_BUCKET = 'character-art';
@@ -19,7 +20,7 @@ const setCur = (v) => { try { localStorage.setItem(PLAYER_KEY, v); } catch (e) {
 const clearCur = () => { try { localStorage.removeItem(PLAYER_KEY); } catch (e) {} };
 
 const sheetEl = () => $('sheet');
-let state = { id: null, art_url: null, locked: false };
+let state = { id: null, art_url: null, locked: false, species: '' };
 let loreCache = { species: [], patrons: [], glossary: [] };
 let loreLoaded = false;
 
@@ -62,72 +63,65 @@ function wireTabs() {
 function applyLockUI() {
   setSheetDisabled(sheetEl(), state.locked);
   $('artInput').disabled = state.locked;
+  $('artUrl').disabled = state.locked;
   $('saveBtn').classList.toggle('hidden', state.locked);
   $('lockBtn').textContent = state.locked ? '🔓 Unlock' : '🔒 Lock';
   $('lockState').textContent = state.locked ? '🔒 Locked — read-only' : 'Editable';
+}
+function renderArt() {
+  const el = $('artPreview');
+  if (state.art_url) el.innerHTML = `<img src="${esc(state.art_url)}" alt="character art" />`;
+  else el.textContent = 'No art';
+  $('artUrl').value = state.art_url || '';
 }
 
 async function loadSheet() {
   const { data, error } = await sb.from('characters')
     .select('*').eq('player_name', cur()).order('created_at', { ascending: true }).limit(1);
-  if (error) { msg($('sheetMsg'), error.message); return; }
+  if (error) { msg($('sheetMsg'), 'Load failed: ' + error.message); return; }
   const row = data && data[0];
-  if (row) {
-    state.id = row.id; state.art_url = row.art_url || null; state.locked = !!row.locked;
-    applySheet(sheetEl(), row.sheet || {});
-  } else {
-    state = { id: null, art_url: null, locked: false };
-    applySheet(sheetEl(), {});
-  }
+  const s = (row && row.sheet) || {};
+  state = { id: row ? row.id : null, art_url: s.art_url || null, locked: !!s.locked, species: s.species || '' };
+  applySheet(sheetEl(), s);
+  if (loreLoaded) $('speciesSelect').value = state.species;
   renderArt();
   recompute(sheetEl());
   applyLockUI();
 }
 
-async function saveSheet() {
-  if (state.locked) return;
+function buildRow() {
   const s = collectSheet(sheetEl());
-  const row = {
+  s.art_url = state.art_url || null;
+  s.locked = state.locked;
+  return {
     player_name: cur(),
     name: s.name || 'Unnamed Outrunner',
     species: s.species || null,
     class_name: s.class || null,
     subclass: s.subclass || null,
     level: Math.max(1, Math.min(20, parseInt(s.level, 10) || 1)),
-    art_url: state.art_url,
-    locked: state.locked,
     sheet: s,
   };
+}
+async function persist() {
+  const row = buildRow();
   let res;
   if (state.id) res = await sb.from('characters').update(row).eq('id', state.id).select('id').single();
   else res = await sb.from('characters').insert(row).select('id').single();
-  if (res.error) { msg($('sheetMsg'), res.error.message); return; }
+  if (res.error) return res.error;
   state.id = res.data.id;
-  msg($('sheetMsg'), 'Saved.', 'ok');
+  return null;
 }
-
+async function saveSheet() {
+  if (state.locked) return;
+  const err = await persist();
+  msg($('sheetMsg'), err ? 'Save failed: ' + err.message : 'Saved.', err ? 'error' : 'ok');
+}
 async function toggleLock() {
   state.locked = !state.locked;
   applyLockUI();
-  // persist the lock (and current field values if we were editable)
-  const s = collectSheet(sheetEl());
-  const row = {
-    player_name: cur(), name: s.name || 'Unnamed Outrunner', species: s.species || null,
-    class_name: s.class || null, subclass: s.subclass || null,
-    level: Math.max(1, Math.min(20, parseInt(s.level, 10) || 1)),
-    art_url: state.art_url, locked: state.locked, sheet: s,
-  };
-  let res;
-  if (state.id) res = await sb.from('characters').update(row).eq('id', state.id).select('id').single();
-  else res = await sb.from('characters').insert(row).select('id').single();
-  if (!res.error && res.data) state.id = res.data.id;
-  msg($('sheetMsg'), state.locked ? 'Sheet locked.' : 'Sheet unlocked.', 'ok');
-}
-
-function renderArt() {
-  const el = $('artPreview');
-  if (state.art_url) el.innerHTML = `<img src="${esc(state.art_url)}" alt="character art" />`;
-  else el.textContent = 'No art';
+  const err = await persist();
+  msg($('sheetMsg'), err ? 'Save failed: ' + err.message : (state.locked ? 'Sheet locked.' : 'Sheet unlocked.'), err ? 'error' : 'ok');
 }
 
 async function uploadArt(file) {
@@ -136,12 +130,10 @@ async function uploadArt(file) {
   const ext = (file.name.split('.').pop() || 'png').toLowerCase();
   const path = `${cur()}/${Date.now()}.${ext}`;
   const up = await sb.storage.from(ART_BUCKET).upload(path, file, { upsert: true, contentType: file.type });
-  if (up.error) { msg($('artMsg'), up.error.message); return; }
+  if (up.error) { msg($('artMsg'), 'Upload failed: ' + up.error.message + ' — you can paste an image URL instead.'); return; }
   const { data } = sb.storage.from(ART_BUCKET).getPublicUrl(path);
-  state.art_url = data.publicUrl;
-  renderArt();
-  msg($('artMsg'), '');
-  await saveSheet(); // persist the new art url
+  state.art_url = data.publicUrl; renderArt(); msg($('artMsg'), '');
+  const err = await persist(); if (err) msg($('artMsg'), 'Saved art, but sheet save failed: ' + err.message);
 }
 
 // --- personal notes ---------------------------------------------------------
@@ -165,7 +157,7 @@ async function addNote() {
   const title = $('n-title').value.trim();
   if (!title) { msg($('notesMsg'), 'A title is required.'); return; }
   const { error } = await sb.from('player_notes').insert({ player_name: cur(), title, body: $('n-body').value });
-  if (error) { msg($('notesMsg'), error.message); return; }
+  if (error) { msg($('notesMsg'), 'Save failed: ' + error.message); return; }
   $('n-title').value = ''; $('n-body').value = ''; msg($('notesMsg'), 'Saved.', 'ok'); loadNotes();
 }
 
@@ -196,7 +188,7 @@ async function addSummary() {
     title, played_on: $('s-date').value || null, body: $('s-body').value,
   };
   const { error } = await sb.from('session_summaries').insert(row);
-  if (error) { msg($('sumMsg'), error.message); return; }
+  if (error) { msg($('sumMsg'), 'Post failed: ' + error.message); return; }
   ['s-no', 's-title', 's-date', 's-body'].forEach((id) => ($(id).value = ''));
   msg($('sumMsg'), 'Posted.', 'ok'); loadSummaries();
 }
@@ -213,9 +205,7 @@ async function loadLore() {
   loreCache = { species: sp.data || [], patrons: pa.data || [], glossary: gl.data || [] };
   $('speciesSelect').innerHTML = '<option value="">— species —</option>' +
     loreCache.species.map((s) => `<option>${esc(s.name)}</option>`).join('');
-  // re-apply the saved species now the options exist
-  if (state.id) sb.from('characters').select('sheet').eq('id', state.id).single()
-    .then(({ data }) => { if (data && data.sheet && data.sheet.species) $('speciesSelect').value = data.sheet.species; });
+  if (state.species) $('speciesSelect').value = state.species;
   renderSpecies(loreCache.species);
   $('patronList').innerHTML = loreCache.patrons.map((p) =>
     `<div class="card"><h3>${esc(p.name)}</h3><div class="meta">${esc(p.domain)}</div><p class="small">${esc(p.blurb)}</p></div>`).join('');
@@ -236,6 +226,7 @@ window.addEventListener('DOMContentLoaded', () => {
   $('saveBtn').onclick = saveSheet;
   $('lockBtn').onclick = toggleLock;
   $('artInput').onchange = (e) => uploadArt(e.target.files[0]);
+  $('artUrl').onchange = (e) => { state.art_url = e.target.value.trim() || null; renderArt(); };
   $('n-create').onclick = addNote;
   $('s-create').onclick = addSummary;
   sheetEl().addEventListener('input', () => recompute(sheetEl()));

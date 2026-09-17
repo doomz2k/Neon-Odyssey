@@ -99,7 +99,7 @@ button.btn:hover { filter: brightness(1.08); }
 .pin-lock { max-width: 360px; margin: 40px auto; text-align: center; }
 .pin-lock .lockicon { font-size: 40px; }
 
-/* Player-select cards (main menu) */
+/* ===== Player-select cards ===== */
 .player-card { width:100%; font-family:inherit; background:var(--panel2);
   display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;
   transition:border-color .15s, transform .1s; }
@@ -121,6 +121,10 @@ button.btn:hover { filter: brightness(1.08); }
   display:flex; align-items:center; justify-content:center; color:var(--muted); overflow:hidden; background:#170d26; }
 .art-preview img { width:100%; height:100%; object-fit:cover; }
 .art-upload { cursor:pointer; text-align:center; }
+.art-col input { font-size:11px; }
+
+.readout { background:#170d26; border:1px solid var(--line); border-radius:8px;
+  padding:9px; font-size:18px; font-weight:700; color:var(--cyan); text-align:center; }
 
 .abilities { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
 .abilities.ro { grid-template-columns:repeat(6,1fr); }
@@ -140,14 +144,32 @@ button.btn:hover { filter: brightness(1.08); }
 .prof-name { flex:1; font-size:13px; }
 
 .combat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-.combat-grid label { margin-top:2px; }
+
+.death { display:flex; flex-direction:column; gap:14px; padding-top:4px; }
+.death > div { display:flex; align-items:center; gap:10px; }
+.death-lbl { width:90px; font-weight:700; font-size:13px; }
+.death-lbl.ok { color:var(--ok); } .death-lbl.bad { color:var(--danger); }
+.death input[type="checkbox"] { width:20px; height:20px; }
+
+.atk-head, .atk-row { display:grid; grid-template-columns:2fr 1fr 2fr; gap:8px; }
+.atk-head { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px; }
+.atk-row { margin-bottom:6px; }
+
+.slots { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:6px 0 12px; }
+@media (max-width:520px){ .slots{ grid-template-columns:repeat(2,1fr); } }
+.slot { display:flex; align-items:center; gap:6px; background:#170d26; border:1px solid var(--line);
+  border-radius:8px; padding:5px 8px; }
+.slot-lv { font-weight:700; color:var(--pink); width:26px; flex:0 0 auto; font-size:13px; }
+.slot input { padding:5px; text-align:center; }
 
 /* DM read-only sheets */
 .ro-sheet { margin-bottom:18px; }
 .ro-head { display:flex; gap:14px; align-items:center; margin-bottom:12px; }
 .ro-art { width:80px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--line); }
-.ro-combat { display:flex; flex-wrap:wrap; gap:6px 16px; margin:10px 0; font-size:13px; color:var(--muted); }
+.ro-combat { display:flex; flex-wrap:wrap; gap:6px 12px; margin:10px 0; font-size:13px; color:var(--muted); }
 .ro-combat span { background:#170d26; padding:3px 10px; border-radius:999px; border:1px solid var(--line); }
+.ro-slots { display:flex; flex-wrap:wrap; gap:6px 12px; margin:6px 0; font-size:12px; color:var(--cyan); }
+.ro-atk { font-size:13px; }
 .ro-sec { margin-top:10px; }
 .ro-sec h4, .sheet-grid h4 { margin:0 0 4px; color:var(--cyan); font-size:13px; }
 .ro-sec p { font-size:13px; margin:0; }

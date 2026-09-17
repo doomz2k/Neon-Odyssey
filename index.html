@@ -18,7 +18,6 @@
   </header>
 
   <div class="wrap">
-    <!-- MAIN MENU -->
     <section id="selectView">
       <div class="panel" style="text-align:center;">
         <h2 style="justify-content:center;">Who are you?</h2>
@@ -27,7 +26,6 @@
       </div>
     </section>
 
-    <!-- PLAYER AREA -->
     <section id="appView" class="hidden">
       <nav class="tabs">
         <button data-tab="sheet" class="active">Character</button>
@@ -55,6 +53,7 @@
               <label class="art-upload btn ghost small">Upload art
                 <input id="artInput" type="file" accept="image/*" hidden />
               </label>
+              <input id="artUrl" placeholder="…or paste image URL" class="small" />
               <div id="artMsg" class="small"></div>
             </div>
             <div class="id-col">
@@ -70,21 +69,24 @@
               <div class="row">
                 <div><label>Background</label><input data-field="background" /></div>
                 <div><label>Alignment</label><input data-field="alignment" /></div>
-                <div class="shrink" style="width:110px;"><label>Galactic Notes</label><input data-field="galactic_notes" /></div>
+                <div class="shrink" style="width:120px;"><label>Galactic Notes</label><input data-field="galactic_notes" /></div>
               </div>
             </div>
           </div>
 
-          <!-- Abilities + combat -->
-          <div class="sheet-grid">
-            <div class="panel">
-              <h2>Ability Scores</h2>
-              <div id="abilities" class="abilities"></div>
-              <div class="row" style="margin-top:10px;">
-                <div class="shrink" style="width:120px;"><label>Proficiency</label><input data-field="prof_bonus" type="number" value="2" /></div>
-                <div class="shrink"><label>Inspiration</label><input data-field="inspiration" type="number" value="0" style="width:80px;" /></div>
-              </div>
+          <!-- Abilities -->
+          <div class="panel">
+            <h2>Ability Scores</h2>
+            <div id="abilities" class="abilities"></div>
+            <div class="row" style="margin-top:10px;">
+              <div class="shrink" style="width:120px;"><label>Proficiency</label><input data-field="prof_bonus" type="number" value="2" /></div>
+              <div class="shrink" style="width:110px;"><label>Inspiration</label><input data-field="inspiration" type="number" value="0" /></div>
+              <div class="shrink" style="width:150px;"><label>Passive Perception</label><div class="readout" id="passive-perception">10</div></div>
             </div>
+          </div>
+
+          <!-- Combat + death saves -->
+          <div class="sheet-grid">
             <div class="panel">
               <h2>Combat</h2>
               <div class="combat-grid">
@@ -97,22 +99,62 @@
                 <div><label>Temp HP</label><input data-field="hp_temp" type="number" /></div>
               </div>
             </div>
+            <div class="panel">
+              <h2>Death Saves</h2>
+              <div class="death">
+                <div><span class="death-lbl ok">Successes</span>
+                  <label><input type="checkbox" data-field="death.s1" /></label>
+                  <label><input type="checkbox" data-field="death.s2" /></label>
+                  <label><input type="checkbox" data-field="death.s3" /></label>
+                </div>
+                <div><span class="death-lbl bad">Failures</span>
+                  <label><input type="checkbox" data-field="death.f1" /></label>
+                  <label><input type="checkbox" data-field="death.f2" /></label>
+                  <label><input type="checkbox" data-field="death.f3" /></label>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Saves + skills -->
           <div class="sheet-grid">
-            <div class="panel">
-              <h2>Saving Throws</h2>
-              <div id="saves" class="prof-list"></div>
+            <div class="panel"><h2>Saving Throws</h2><div id="saves" class="prof-list"></div></div>
+            <div class="panel"><h2>Skills <span class="small muted">· Computers &amp; Technology are INT</span></h2><div id="skills" class="prof-list"></div></div>
+          </div>
+
+          <!-- Attacks -->
+          <div class="panel">
+            <h2>Weapons &amp; Attacks</h2>
+            <div class="atk-head"><span>Name</span><span>Atk bonus</span><span>Damage / type</span></div>
+            <div class="atk-row"><input data-field="atk1_name" /><input data-field="atk1_atk" /><input data-field="atk1_dmg" /></div>
+            <div class="atk-row"><input data-field="atk2_name" /><input data-field="atk2_atk" /><input data-field="atk2_dmg" /></div>
+            <div class="atk-row"><input data-field="atk3_name" /><input data-field="atk3_atk" /><input data-field="atk3_dmg" /></div>
+            <div class="atk-row"><input data-field="atk4_name" /><input data-field="atk4_atk" /><input data-field="atk4_dmg" /></div>
+          </div>
+
+          <!-- Spellcasting -->
+          <div class="panel">
+            <h2>Spellcasting</h2>
+            <div class="row">
+              <div><label>Spellcasting class</label><input data-field="spell_class" /></div>
+              <div class="shrink" style="width:170px;"><label>Spellcasting ability</label>
+                <select data-field="spell_ability">
+                  <option value="">—</option>
+                  <option value="int">Intelligence</option>
+                  <option value="wis">Wisdom</option>
+                  <option value="cha">Charisma</option>
+                </select>
+              </div>
+              <div class="shrink" style="width:110px;"><label>Spell save DC</label><div class="readout" id="spell-dc">8</div></div>
+              <div class="shrink" style="width:110px;"><label>Spell attack</label><div class="readout" id="spell-atk">+0</div></div>
             </div>
-            <div class="panel">
-              <h2>Skills <span class="small muted">· Computers &amp; Technology are INT</span></h2>
-              <div id="skills" class="prof-list"></div>
-            </div>
+            <label style="margin-top:10px;">Spell slots <span class="muted small">(total / used per level)</span></label>
+            <div id="spellslots" class="slots"></div>
+            <label>Cantrips</label><textarea data-field="cantrips"></textarea>
+            <label>Spells known / prepared</label><textarea data-field="spells" placeholder="List by level…"></textarea>
           </div>
 
           <!-- Text sections -->
-          <div class="panel"><h2>Weapons &amp; Attacks</h2><textarea data-field="attacks" placeholder="Name · bonus · damage…"></textarea></div>
           <div class="panel"><h2>Equipment</h2><textarea data-field="equipment"></textarea></div>
           <div class="panel"><h2>Features &amp; Traits</h2><textarea data-field="features"></textarea></div>
           <div class="panel"><h2>Proficiencies &amp; Languages</h2><textarea data-field="proficiencies"></textarea></div>
@@ -120,7 +162,7 @@
         </div>
       </div>
 
-      <!-- NOTES (personal) -->
+      <!-- NOTES -->
       <div id="tab-notes" class="tabpane hidden">
         <div class="panel">
           <h2>Add a note</h2>
@@ -133,7 +175,7 @@
         <div class="panel"><h2>Your notes</h2><div id="noteList"></div></div>
       </div>
 
-      <!-- SESSION SUMMARIES (shared) -->
+      <!-- SESSION SUMMARIES -->
       <div id="tab-summaries" class="tabpane hidden">
         <div class="panel">
           <h2>Add a session summary</h2>
