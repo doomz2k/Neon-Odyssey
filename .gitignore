@@ -1,0 +1,15 @@
+# This is a static site — nothing to build. Keep the repo clean of local cruft.
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local dev servers / tooling, if you add any
+node_modules/
+*.log
+
+# Never commit the service_role/secret key or any private env
+.env
+.env.*

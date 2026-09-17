@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neon Odyssey — DM Console</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <!-- PIN gate FIRST, before anything renders, so DM content never flashes. -->
+  <script src="/js/dm-gate.js"></script>
+</head>
+<body>
+  <header class="top">
+    <h1>NEON&nbsp;<span class="glow">ODYSSEY</span> · DM</h1>
+    <div class="whoami"><a href="/" class="small">&larr; Player site</a></div>
+  </header>
+
+  <div class="wrap">
+    <nav class="tabs">
+      <button data-tab="npcs" class="active">NPCs</button>
+      <button data-tab="encounters">Encounters</button>
+      <button data-tab="loot">Loot</button>
+      <button data-tab="dmnotes">DM Notes</button>
+    </nav>
+
+    <div id="tab-npcs" class="tabpane">
+      <div class="panel"><h2>New NPC</h2>
+        <div class="row"><div><label>Name</label><input id="npc-name" /></div>
+        <div><label>Role</label><input id="npc-role" placeholder="e.g. Bounty broker on Sleema" /></div></div>
+        <label>Notes / statblock</label><textarea id="npc-notes"></textarea>
+        <div style="margin-top:10px;"><button class="btn" id="npc-add">Add NPC</button></div>
+      </div>
+      <div class="panel"><h2>NPCs</h2><div id="npc-list" class="grid"></div></div>
+    </div>
+
+    <div id="tab-encounters" class="tabpane hidden">
+      <div class="panel"><h2>New encounter</h2>
+        <label>Name</label><input id="enc-name" />
+        <label>Summary</label><textarea id="enc-summary"></textarea>
+        <div style="margin-top:10px;"><button class="btn" id="enc-add">Add encounter</button></div>
+      </div>
+      <div class="panel"><h2>Encounters</h2><div id="enc-list" class="grid"></div></div>
+    </div>
+
+    <div id="tab-loot" class="tabpane hidden">
+      <div class="panel"><h2>New loot</h2>
+        <div class="row"><div><label>Name</label><input id="loot-name" /></div>
+        <div><label>Value (Galactic Notes)</label><input id="loot-value" /></div></div>
+        <label>Description</label><textarea id="loot-desc"></textarea>
+        <div style="margin-top:10px;"><button class="btn" id="loot-add">Add loot</button></div>
+      </div>
+      <div class="panel"><h2>Loot</h2><div id="loot-list" class="grid"></div></div>
+    </div>
+
+    <div id="tab-dmnotes" class="tabpane hidden">
+      <div class="panel"><h2>New DM-only note</h2>
+        <p class="small muted">Marked <span class="badge dm">DM ONLY</span> — the player site never requests these.</p>
+        <label>Title</label><input id="dn-title" />
+        <label>Body</label><textarea id="dn-body"></textarea>
+        <div style="margin-top:10px;"><button class="btn" id="dn-add">Post DM note</button></div>
+      </div>
+      <div class="panel"><h2>DM-only notes</h2><div id="dn-list"></div></div>
+    </div>
+  </div>
+
+  <div class="foot">DM console · gated by dm-gate.js (light PIN — see the file header).</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/supabase-config.js"></script>
+  <script src="/js/dm-common.js"></script>
+</body>
+</html>

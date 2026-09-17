@@ -1,0 +1,100 @@
+:root {
+  --bg: #140a1f;
+  --bg2: #1e1030;
+  --panel: #241539;
+  --panel2: #2d1a46;
+  --ink: #f3e9ff;
+  --muted: #b6a6d6;
+  --pink: #ff4fd8;
+  --cyan: #00e6ff;
+  --gold: #ffd24a;
+  --line: #402a5e;
+  --danger: #ff5c7a;
+  --ok: #58e08b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(255,79,216,0.12), transparent),
+    radial-gradient(1000px 500px at -10% 20%, rgba(0,230,255,0.10), transparent),
+    var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+a { color: var(--cyan); }
+
+header.top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  background: linear-gradient(100deg, #2a0a42, #57126b 55%, #a2115f);
+  border-bottom: 2px solid var(--pink);
+}
+header.top h1 {
+  margin: 0; font-size: 20px; letter-spacing: 3px; font-weight: 800;
+}
+header.top h1 .glow { color: #ff9cec; }
+header.top .whoami { font-size: 13px; color: #ffd9f4; display: flex; gap: 10px; align-items: center; }
+
+.wrap { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+nav.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+nav.tabs button {
+  background: var(--panel); color: var(--muted);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; font-size: 14px; font-weight: 600;
+}
+nav.tabs button.active { color: var(--ink); border-color: var(--pink); background: var(--panel2); }
+nav.tabs button:hover { color: var(--ink); }
+
+.panel {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 18px; margin-bottom: 16px;
+}
+.panel h2 { margin: 0 0 12px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--pink); }
+.panel h3 { margin: 0 0 6px; font-size: 15px; color: var(--cyan); }
+
+.card {
+  background: var(--panel2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+}
+.card .meta { color: var(--muted); font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+
+label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+input, textarea, select {
+  width: 100%; background: #170d26; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; font-size: 14px;
+  font-family: inherit;
+}
+textarea { min-height: 90px; resize: vertical; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--cyan); }
+
+button.btn {
+  background: linear-gradient(100deg, var(--pink), #b3149c);
+  color: #fff; border: none; border-radius: 8px;
+  padding: 10px 16px; font-weight: 700; cursor: pointer; font-size: 14px;
+}
+button.btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+button.btn.danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+button.btn:hover { filter: brightness(1.08); }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.row > * { flex: 1; }
+.row .shrink { flex: 0 0 auto; }
+
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; letter-spacing: .4px; }
+.badge.dm { background: #4a0f2f; color: #ff9cc4; border: 1px solid var(--danger); }
+.badge.shared { background: #123a41; color: #8ff0ff; border: 1px solid var(--cyan); }
+
+.msg { padding: 10px 12px; border-radius: 8px; margin: 10px 0; font-size: 14px; }
+.msg.error { background: #3a1220; color: #ffb3c4; border: 1px solid var(--danger); }
+.msg.ok { background: #123420; color: #b6f2cd; border: 1px solid var(--ok); }
+.muted { color: var(--muted); }
+.hidden { display: none !important; }
+.small { font-size: 12px; }
+.foot { text-align: center; color: var(--muted); font-size: 12px; padding: 24px; }
+.pin-lock { max-width: 360px; margin: 40px auto; text-align: center; }
+.pin-lock .lockicon { font-size: 40px; }
