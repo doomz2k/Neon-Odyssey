@@ -15,8 +15,8 @@
 // Auth: none for now — obscurity + the dm-gate PIN, matching the Eapheron
 // tools. Supabase Auth + Row Level Security is a later phase.
 
-const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLISHABLE-KEY';
+const SUPABASE_URL = 'https://zndbcvxevqxcfrhjnmxg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Xyhb5mBGS_gz068yyZQMDQ_kH65Y8XZ';
 
 // Exposed globally for the page scripts.
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
